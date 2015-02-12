@@ -1,0 +1,168 @@
+\section{Understanding Convolutional Neural Networks}
+\label{sec:understanding-convolutional-networks}
+
+Although convolutional neural networks have been used with success for a variety of computer vision tasks, their internal operation is not well understood. While backprojection of feature activations from the first convolutional layer is possible, subsequent pooling and rectification layers hinder us from understanding higher layers as well. As stated in \cite{ZeilerFergus:2013}, this is highly unsatisfactory when aiming to improve convolutional neural networks. Thus, in \cite{ZeilerFergus:2013}, a visualization technique is proposed which allows us to visualize the activations from higher layers. This technique is based on an additional model for unsupervised learning of feature hierarchies: the deconvolutional neural network as introduced in \cite{ZeilerKrishnanTaylorFergus:2010}.
+
+\subsection{Deconvolutional Neural Networks}
+
+Similar to convolutional neural networks, deconvolutional neural networks are based upon the idea of generating feature hierarchies by convolving the input image by a set of filters at each layer \cite{ZeilerKrishnanTaylorFergus:2010}. However, deconvolutional neural networks are unsupervised by definition. In addition, deconvolutional neural networks are based on a top-down approach. This means, the goal is to reconstruct the network input from its activations and filters \cite{ZeilerKrishnanTaylorFergus:2010}.
+
+\subsubsection{Deconvolutional Layer}
+
+\begin{figure}[b!]
+	\centering
+	\begin{tikzpicture}
+		\node at (2.5,3.25){convolutional layer};
+		
+		\draw (0,0) -- (1.5,0) -- (1.5,1.5) -- (0,1.5) -- (0,0);
+		
+		\draw (1.1,1.1) -- (1.3,1.1) -- (1.3,1.3) -- (1.1,1.3) -- (1.1,1.1);
+		
+		\draw (1.3,1.3) -- (3.7,1.2);
+		\draw (1.3,1.1) -- (3.7,1.2);
+		
+		%\draw[fill=black,opacity=0.2,draw=black] (3.25,0.75) -- (4.75,0.75) -- (4.75,2.25) -- (3.25,2.25) -- (3.25,0.75);
+		\draw[fill=black,opacity=0.2,draw=black] (3,0.5) -- (4.5,0.5) -- (4.5,2) -- (3,2) -- (3,0.5);
+		\draw[fill=black,opacity=0.2,draw=black] (2.75,0.25) -- (4.25,0.25) -- (4.25,1.75) -- (2.75,1.75) -- (2.75,0.25);
+		\draw[fill=black,opacity=0.2,draw=black] (2.5,0) -- (4,0) -- (4,1.5) -- (2.5,1.5) -- (2.5,0);
+		
+		\node (conv-left) at (0,-0.5){};
+		\node (conv-right) at (5,-0.5){};
+		\draw[-latex new,arrow head=0.15cm] (conv-left) -- (conv-right);
+		\node at (2.5,-1){bottom-up};
+		
+		\node at (8.5,3.25){deconvolutional layer};
+		
+		\draw (6,0) -- (7.5,0) -- (7.5,1.5) -- (6,1.5) -- (6,0);
+		
+		\draw (7.25,1.25) -- (8.25,2.25);
+		\draw (7.25,1.25) -- (8.25,2.75);
+		
+		\draw (7.25,1.25) -- (8,0);
+		\draw (7.25,1.25) -- (8,0.5);
+		
+		\draw (8.75,2.25) -- (11.1,1.6);
+		\draw (8.75,2.75) -- (11.1,1.9);
+		
+		\draw (8.5,0) -- (10.6,1.1);
+		\draw (8.5,0.5) -- (10.6,1.4);
+		
+		\draw (11.1,1.6) -- (11.4,1.6) -- (11.4,1.9) -- (11.1,1.9) -- (11.1,1.6);
+		\draw (10.6,1.1) -- (10.9,1.1) -- (10.9,1.4) -- (10.6,1.4) -- (10.6,1.1);
+		
+		\draw[fill=black,opacity=0.2,draw=black] (8.5,2.5) -- (9,2.5) -- (9,3) -- (8.5,3) -- (8.5,2.5);
+		\draw[fill=black,opacity=0.2,draw=black] (8.25,2.25) -- (8.75,2.25) -- (8.75,2.75) -- (8.25,2.75) -- (8.25,2.25);
+		\draw[fill=black,opacity=0.2,draw=black] (8,2) -- (8.5,2) -- (8.5,2.5) -- (8,2.5) -- (8,2);
+		\node at (8.5, 1.5){$\vdots$};
+		\draw[fill=black,opacity=0.2,draw=black] (8.5,0.5) -- (9,0.5) -- (9,1) -- (8.5,1) -- (8.5,0.5);
+		\draw[fill=black,opacity=0.2,draw=black] (8.25,0.25) -- (8.75,0.25) -- (8.75,0.75) -- (8.25,0.75) -- (8.25,0.25);
+		\draw[fill=black,opacity=0.2,draw=black] (8,0) -- (8.5,0) -- (8.5,0.5) -- (8,0.5) -- (8,0);
+		
+		\draw[fill=black,opacity=0.2,draw=black] (10,0.5) -- (11.5,0.5) -- (11.5,2) -- (10,2) -- (10,0.5);
+		\draw[fill=black,opacity=0.2,draw=black] (9.75,0.25) -- (11.25,0.25) -- (11.25,1.75) -- (9.75,1.75) -- (9.75,0.25);
+		\draw[fill=black,opacity=0.2,draw=black] (9.5,0) -- (11,0) -- (11,1.5) -- (9.5,1.5) -- (9.5,0);
+		
+		\node (deconv-left) at (6,-0.5){};
+		\node (deconv-right) at (11,-0.5){};
+		\draw[-latex new,arrow head=0.15cm] (deconv-right) -- (deconv-left);
+		\node at (8.5,-1){top-down};
+	\end{tikzpicture}
+	\caption[Illustration of the top-down approach of deconvolutional layers.]{An illustration of the difference between the bottom-up approach of convolutional layers and the top-down approach of deconvolutional layers.}
+	\label{fig:deconvolutional-layer}
+\end{figure}
+Let layer $l$ be a deconvolutional layer. The input is composed of $m_1^{(l-1)}$ feature maps of size $m_2^{(l-1)} \times m_3^{(l-1)}$. Each such feature map $Y_i^{(l-1)}$ is represented as sum over $m_1^{(l)}$ feature maps convolved with filters~$K_{j,i}^{(l)}$:
+\begin{align}
+	\sum _{j = 1} ^{m_1^{(l)}} K_{j,i}^{(l)} \ast Y_j^{(l)} = Y_i^{(l-1)}.
+\end{align}
+As with an auto-encoder, it is easy for the layer to learn the identity, if there are enough degrees of freedom. Therefore, \cite{ZeilerKrishnanTaylorFergus:2010} introduces a sparsity constraint for the feature maps $Y_j^{(l)}$, and the error measure for training layer $l$ is given by
+\begin{align}
+	\label{eq:error-deconvolutional-layer}
+	E^{(l)}(w) = \sum_{i = 1}^{m_1^{(l - 1)}} \left\| \sum_{j = 1}^{m_1^{(l)}} K_{j,i}^{(l)} \ast Y_j^{(l)} - Y_i^{(l-1)} \right\|_2^2 + \sum _{i = 1}^{m_1^{(l)}} \left \| Y_i^{(l)} \right\|_p^p
+\end{align}
+where $\|\cdot\|_p$ is the vectorized $p$-norm and can be interpreted as $L_p$-regularization as discussed in section~\ref{subsubsec:lp-regularization}. The difference between a convolutional layer and a deconvolutional layer is illustrated in figure~\ref{fig:deconvolutional-layer}. Note that the error measure $E^{(l)}$ is specific for layer $l$. This implies that a deconvolutional neural network with multiple deconvolutional layers is trained layer-wise.
+
+\subsubsection{Unsupervised Training}
+
+Similar to unsupervised training discussed in section \ref{subsec:unsupervised-training}, training is performed layer-wise. Therefore, equation \eqref{eq:error-deconvolutional-layer} is optimized by alternately optimizing with respect to the feature maps $Y_i^{(l)}$ given the filters $K_{j,i}^{(l)}$ and the feature maps $Y_i^{(l-1)}$ of the previous layer and with respect to the filters $K_{j,i}^{(l)}$ \cite{ZeilerKrishnanTaylorFergus:2010}. Here, the optimization with respect to the feature maps $Y_i^{(l)}$ causes some problems. For example when using $p = 1$, the optimization problem is poorly conditioned \cite{ZeilerKrishnanTaylorFergus:2010} and therefore usual gradient descent optimization fails. An alternative optimization scheme is discussed in detail in \cite{ZeilerKrishnanTaylorFergus:2010}, however, as we do not need to train deconvolutional neural networks, this is left to the reader.
+
+\subsection{Visualizing Convolutional Neural Networks}
+\label{subsec:visualizing-convolutional-networks}
+
+To visualize and understand the internal operations of a convolutional neural network, a single deconvolutional layer is attached to each convolutional layer. Given input feature maps for layer $l$, the output feature maps $Y_i^{(l)}$ are fed back into the corresponding deconvolutional layer at level $l$. The deconvolutional layer reconstructs the feature maps $Y_i^{(l-1)}$ that gave rise to the activations in layer $l$ \cite{ZeilerFergus:2013}. This process is iterated until layer $l = 0$ is reached resulting in the activations of layer $l$ being backprojected onto the image plane. The general idea is illustrated in figure \ref{fig:visualizing-scheme}.
+\begin{figure}[t!]
+	\centering
+	\begin{tikzpicture}
+		\node[draw=black,rectangle,inner sep=0.2cm](dL) at (0,3){deconvolutional layer $l = L$};
+		\node(dl) at (0,1.5){$\vdots$};
+		\node[draw=black,rectangle,inner sep=0.2cm,minimum width=4cm](d1) at (0,0){deconvolutional layer $l = 1$};
+		\node[draw=black,rectangle,inner sep=0.2cm,minimum width=4cm](d0) at (0,-1.5){feature activations};
+	
+		\node[draw=black,rectangle,inner sep=0.2cm,minimum width=4cm](cL1) at (6,4.5){output layer $l = L + 1$};
+		\node[draw=black,rectangle,inner sep=0.2cm,minimum width=4cm](cL) at (6,3){convolutional layer $l = L$};
+		\node(cl) at (6,1.5){$\vdots$};
+		\node[draw=black,rectangle,inner sep=0.2cm,minimum width=4cm](c1) at (6,0){convolutional layer $l = 1$};
+		\node[draw=black,rectangle,inner sep=0.2cm,minimum width=4cm](c0) at (6,-1.5){input image $l = 0$};
+		
+		\draw[-latex new,arrow head=0.15cm] (c0) -- (c1);
+		\draw[-latex new,arrow head=0.15cm] (c1) -- (cl);
+		\draw[-latex new,arrow head=0.15cm] (cl) -- (cL);
+		\draw[-latex new,arrow head=0.15cm] (cL) -- (cL1);
+		
+		\draw[-latex new,arrow head=0.15cm] (c1) -- (6,0.75) -- (0,0.75) -- (d1);
+		\draw[-latex new,arrow head=0.15cm] (cL) -- (6,3.75) -- (0,3.75) -- (dL);
+		
+		\draw[-latex new,arrow head=0.15cm] (dL) -- (dl);
+		\draw[-latex new,arrow head=0.15cm] (dl) -- (d1);
+		\draw[-latex new,arrow head=0.15cm] (d1) -- (d0);
+	\end{tikzpicture}
+	\caption[Illustration of the basic technique used to visualize the activations of each layer within a convolutional neural network.]{After each convolutional layer, the feature activations of the previous layer are reconstructed using an attached deconvolutional layer. For $l > 1$ the process of reconstruction is iterated until the feature activations are backprojected onto the image plane.}
+	\label{fig:visualizing-scheme}
+\end{figure}
+Note that the deconvolutional layers do not need to be trained as the filters are already given by the trained convolutional layers and merely have to be transposed\footnote{Given a feature map $Y_i^{(l)} = K_{i,j}^{(l)} \ast Y_j^{(l-1)}$ (here we omit the sum of equation \eqref{eq:convolutional-layer} for simplicity) and using the transposed filter $\left(K_{j,i}^{(l)}\right)^T$ gives us: $Y_j^{(l-1)} = \left(K_{i,j}^{(l)}\right)^T \ast Y_i^{(l)}$.}. More complex convolutional neural networks may include non-linearity layers, rectification layers as well as pooling layers. While we assume the used non-linearities to be invertible , the use of rectification layers and pooling layers cause some problems.
+
+\subsubsection{Pooling Layers}
+
+Let layer $l$ be a max pooling layer, then the operation of layer $l$ is not invertible. We need to remember which positions within the input feature map $Y_i^{(l)}$ gave rise to the maximum value to get an approximate inverse \cite{ZeilerFergus:2013}. Therefore, as discussed in \cite{ZeilerFergus:2013}, switch variables are introduced.
+
+\subsubsection{Rectification Layers}
+
+The convolutional layer may use rectification layers to obtain positive feature maps after each non-linearity layer. To cope with this, a rectification layer is added to each deconvolutional layer to obtain positive reconstructions of the feature maps, as well \cite{ZeilerFergus:2013}. Both the incorporation of pooling layers and rectification layers is illustrated in figure \ref{fig:pooling-rectification-deconvolutional}.
+\begin{figure}[t!]
+	\centering
+	\begin{tikzpicture}
+		\node[draw=black,rectangle,inner sep=0.2cm,minimum width=4cm](unpool) at (0,4.5){unpooling layer};
+		\node[draw=black,rectangle,inner sep=0.2cm,minimum width=4cm](unrect) at (0,3){rectification layer};
+		\node[draw=black,rectangle,inner sep=0.2cm,minimum width=4cm](unnonlin) at (0,1.5){non-linearity layer};
+		\node[draw=black,rectangle,inner sep=0.2cm,minimum width=4cm](deconv) at (0,0){deconvolutional layer};
+		
+		\node[draw=black,rectangle,inner sep=0.2cm,minimum width=4cm](pool) at (6,4.5){pooling layer};
+		\node[draw=black,rectangle,inner sep=0.2cm,minimum width=4cm](rect) at (6,3){rectification layer};
+		\node[draw=black,rectangle,inner sep=0.2cm,minimum width=4cm](nonlin) at (6,1.5){non-linearity layer};
+		\node[draw=black,rectangle,inner sep=0.2cm,minimum width=4cm](conv) at (6,0){convolutional layer};
+		
+		\draw[-latex new,arrow head=0.15cm] (conv) -- (nonlin);
+		\draw[-latex new,arrow head=0.15cm] (nonlin) -- (rect);
+		\draw[-latex new,arrow head=0.15cm] (rect) -- (pool);
+		
+		\draw[-latex new,arrow head=0.15cm] (rect) -- (6,3.75) -- (0,3.75);
+		\node at (3,4){switch variables};
+		
+		\draw[-latex new,arrow head=0.15cm] (unpool) -- (unrect);
+		\draw[-latex new,arrow head=0.15cm] (unrect) -- (unnonlin);
+		\draw[-latex new,arrow head=0.15cm] (unnonlin) -- (deconv);
+	\end{tikzpicture}
+	\caption[Usage of switch variables to visualize feature activations of convolutional neural networks including pooling and rectification layers.]{While the approach described in section \ref{subsec:visualizing-convolutional-networks} can easily be applied to convolutional neural networks including non-linearity layers, the usage of pooling and rectification layers imposes some problems. The max pooling operation is not invertible. Therefore, for each unit in the pooling layer, we remember the position in the corresponding feature map which gave rise to the unit's output value. To accomplish this, so called switch variables are introduced \cite{ZeilerFergus:2013}. Rectification layers can simply be inverted by prepending a rectification layer to the deconvolutional layer.}
+	\label{fig:pooling-rectification-deconvolutional}
+\end{figure}
+
+\subsection{Convolutional Neural Network Visualization}
+
+The above visualization technique can be used to discuss several aspects of convolutional neural networks. We follow the discussion in \cite{ZeilerFergus:2013} which refers to the architecture described in section \ref{subsubsec:modern-convolutional-networks}.
+
+\subsubsection{Filters and Features}
+
+Backprojecting the feature activations allows close analysis of the hierarchical nature of the features within the convolutional neural network. Figure \ref{fig:feature-activations}, taken from \cite{ZeilerFergus:2013}, shows the activations for three layers with corresponding input images. While the first and second layer comprise filters for edge and corner detection, the filters tend to get more complex and abstract with higher layers. For example when considering layer 3, the feature activations reflect specific structures within the images: the patterns used in layer 3, row 1, column 1; human contours in layer 3 row3, column 3. Higher levels show strong invariances to translation and rotation \cite{ZeilerFergus:2013}. Such transformations usually have high impact on low-level features. In addition, as stated in \cite{ZeilerFergus:2013}, it is important to train the convolutional neural network until convergence as the higher levels usually need more time to converge.
+
+\subsubsection{Architecture Evaluation}
+
+The visualization of the feature activations across the convolutional layers allows to evaluate the effect of filter size as well as filter placement. For example, by analyzing the feature activations of the first and second layer, the authors of \cite{ZeilerFergus:2013} observed that the first layer does only capture high frequency and low frequency information and the feature activations of the second layer show aliasing artifacts. By adapting the filter size of the first layer and the skipping factor used within the second layer, performance could be improved. In addition, the visualization shows the advantage of deep architectures as higher layers are able to learn more complex features invariant to low-level distortions and translations \cite{ZeilerFergus:2013}.

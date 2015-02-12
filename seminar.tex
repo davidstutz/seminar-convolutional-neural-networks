@@ -1,0 +1,78 @@
+\documentclass[twoside,a4paper,article]{combine}
+
+\usepackage[latin1]{inputenc}
+\usepackage{a4}
+\usepackage{fancyhdr}   
+\usepackage{makeidx}
+\usepackage{color}
+\usepackage{t1enc}
+\usepackage{latexsym}
+\usepackage{amssymb}
+
+\usepackage{graphicx}
+\usepackage{pslatex}
+\usepackage{ifthen}
+
+\usepackage[T1]{fontenc}
+\usepackage{pslatex}
+
+\usepackage{psfrag}
+\usepackage{url}
+
+\usepackage{enumerate}
+\usepackage{amsmath}
+
+\usepackage{ntheorem}
+\theoremstyle{break}
+\newtheorem{algorithm}{Algorithm}[section] 
+
+\usepackage{sidecap}
+\usepackage{subfigure}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{arrows.new}
+\usetikzlibrary{fadings}
+
+\delimitershortfall-1sp
+\newcommand\abs[1]{\left|#1\right|}
+
+\setlength{\oddsidemargin}{3.6pt}
+\setlength{\evensidemargin}{22.6pt}
+\setlength{\textwidth}{426.8pt}
+\setlength{\textheight}{654.4pt}
+\setlength{\headsep}{18pt}
+\setlength{\headheight}{15pt}
+\setlength{\topmargin}{-41.7pt}
+\setlength{\topskip}{10pt}
+\setlength{\footskip}{42pt}
+
+\setlength{\parindent}{0pt}
+
+\graphicspath{
+	{pictures/}
+}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\makeglossary
+
+\begin{document}
+	\nocite{*}
+	\include{titlepage}
+
+	\include{abstract}
+
+	\tableofcontents
+	\newpage
+
+	\include{motivation}
+	\include{neural-networks}
+	\include{convolutional-networks}
+	\include{deconvolutional-networks}
+	\include{understanding-convolutional-networks}
+	\include{conclusion}
+
+	\bibliographystyle{alpha}
+	\bibliography{seminar}
+\end{document}
