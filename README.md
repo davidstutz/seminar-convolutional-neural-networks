@@ -1,4 +1,6 @@
-# Understanding Convolutional Neural Networks
+# Seminar Paper: Understanding Convolutional Neural Networks
+
+**Note:** Several of the TikZ figures in this seminar paper are also available in the following repository: [LaTeX Resources](https://github.com/davidstutz/latex-resources).
 
 "Understanding Convolutional Neural Networks"
 
